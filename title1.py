@@ -1,29 +1,13 @@
 import streamlit as st
 
-#main title
-st.title("This is the Main title")
-#section heading
-st.header("This is the section heading")
-#sub heading
-st.subheader("This is the subheading")
+col1,col2 = st.columns(2)
 
-#Normal paragraph
-st.write("This is my normal para. It's great for description")
+with col1:
+  name = st.text_input("Enter your name")
+with col2: 
+  birth_year = st.number_input("Your birth year",min_value=1900,max_value=2100,step=1)
 
-st.markdown(
-    """
-    **I am the bold text**, *I am in Italic*,
-    and a [link to Google](https://www.google.com/)
-    """,
-    unsafe_allow_html=True #permission to use html tages in markdown
-)
-
-st.markdown(
-    """
-    <span style="color:red;">I am red text</span><br>
-    """,
-    unsafe_allow_html=True #permission to use html tages in markdown
-)
-
-#caption
-st.caption("We created this with streamlit")
+if name and birth_year:
+  current_year = 2025
+  age = current_year - birth_year
+  st.write(f"Hello {name}! Your age is {age}")
