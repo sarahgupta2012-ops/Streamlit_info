@@ -1,13 +1,28 @@
+#superhero creater 
 import streamlit as st
 
-col1,col2 = st.columns(2)
+st.title("Superhero profile creator")
 
-with col1:
-  name = st.text_input("Enter your name")
-with col2: 
-  birth_year = st.number_input("Your birth year",min_value=1900,max_value=2100,step=1)
+name = st.text_input("Enter your superhero name")
 
-if name and birth_year:
-  current_year = 2025
-  age = current_year - birth_year
-  st.write(f"Hello {name}! Your age is {age}")
+age = st.number_input("Enter your superhero's age")
+
+backstory = st.text_area("Write your superhero backstory")
+
+superpower = st.selectbox("Choose your main superpower", ["Flying","Invisibility","Mind Reading","Time Travel"])
+
+sidekicks = st.multiselect("Pick your superhero team", ["Robin","Iron Kid","shadow fox","Techno dog"])
+
+strength = st.slider("Rate your power level", 1,100,50)
+
+alignment = st.radio("Are you a hero or a villain?", ["Hero","villain"])
+
+if st.button("Generate Superhero story"):
+  st.subheader("Your superhero profile:")
+  st.write(f"Name:" {name})
+  st.write(f"Age:" {age})
+  st.write(f"Backstory:" {backstory})
+  st.write(f"Superpower:" {superpower})
+  st.write(f"sidekicks:" {sidekicks})
+  st.write(f"Strength:" {strength})
+  st.write(f"Alignment:" {alignment})
