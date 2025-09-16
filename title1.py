@@ -1,28 +1,35 @@
-#superhero creater 
 import streamlit as st
+import pandas as pd
+import numpy as np
 
-st.title("Superhero profile creator")
+st.title("Candy Sales Dashboard")
 
-name = st.text_input("Enter your superhero name")
+#create candy sales data
+np.random.seed(42)
 
-age = st.number_input("Enter your superhero's age")
+days = pd.date_range("2025-09-16",periods=7)
+candy_types = ["Lollilop","Chocolate","Gummy Bear"]
 
-backstory = st.text_area("Write your superhero backstory")
+data = {"Day": days,
+        "Lollipop":np.random.randint(20,100,size=7),
+        "Chocolate":np.random.randint(30,100,size=7),
+        "Gummy Bear":np.random.randint(10,100,size=7)
+        }
 
-superpower = st.selectbox("Choose your main superpower", ["Flying","Invisibility","Mind Reading","Time Travel"])
+df = pd.DataFrame(data)
+st.subheader("Candy Sales static Table")
+st.table(df) #static table just like screenshot
+st.subheader("Candy Sales interactive Table")
+st.dataframe(df) #table is interactive...resize..scroll...sort
+ 
+st.metric("Best lollipop sale",f"{df["Lollipop"].max()}")
+st.metric("Best Chocolate sale",f"{df["Chocolate"].max()}")
+st.metric("Best Gummy Bear sale",f"{df["Gummy Bear"].max()}")
 
-sidekicks = st.multiselect("Pick your superhero team", ["Robin","Iron Kid","shadow fox","Techno dog"])
+st.subheader("Candy sales over time")
+st.line_chart(df.set_index("Day"))
+st.subheader("Candy sales comparision")
+st.bar_chart(df.set_index("Day"))
 
-strength = st.slider("Rate your power level", 1,100,50)
-
-alignment = st.radio("Are you a hero or a villain?", ["Hero","villain"])
-
-if st.button("Generate Superhero story"):
-  st.subheader("Your superhero profile:")
-  st.write(f"Name:" {name})
-  st.write(f"Age:" {age})
-  st.write(f"Backstory:" {backstory})
-  st.write(f"Superpower:" {superpower})
-  st.write(f"sidekicks:" {sidekicks})
-  st.write(f"Strength:" {strength})
-  st.write(f"Alignment:" {alignment})
+st.subheader("Candy sales Growth")
+st.area_chart(df.set_index("Day"))
