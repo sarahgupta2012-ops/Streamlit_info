@@ -1,35 +1,43 @@
+#AI Text Translator tool
 import streamlit as st
-import pandas as pd
-import numpy as np
+import google.generativeai as genai
 
-st.title("Candy Sales Dashboard")
+#Gemini API key setup
+genai.configure(api_key="AIzaSyBmuVv8rM58WUoV0KjRp08wp-bpGhqOGeE")
 
-#create candy sales data
-np.random.seed(42)
+#Load Gemini model
+model = genai.GenerativeModel("gemini-2.5-pro")
 
-days = pd.date_range("2025-09-16",periods=7)
-candy_types = ["Lollilop","Chocolate","Gummy Bear"]
+#streamlit app setup
+st.set_page_config(page_title="AI Text Translator")
 
-data = {"Day": days,
-        "Lollipop":np.random.randint(20,100,size=7),
-        "Chocolate":np.random.randint(30,100,size=7),
-        "Gummy Bear":np.random.randint(10,100,size=7)
-        }
+st.title("AI Text Translator(powered by Gemini)")
 
-df = pd.DataFrame(data)
-st.subheader("Candy Sales static Table")
-st.table(df) #static table just like screenshot
-st.subheader("Candy Sales interactive Table")
-st.dataframe(df) #table is interactive...resize..scroll...sort
- 
-st.metric("Best lollipop sale",f"{df["Lollipop"].max()}")
-st.metric("Best Chocolate sale",f"{df["Chocolate"].max()}")
-st.metric("Best Gummy Bear sale",f"{df["Gummy Bear"].max()}")
+st.write("Pick Languages, type text, and get instant translation!")
 
-st.subheader("Candy sales over time")
-st.line_chart(df.set_index("Day"))
-st.subheader("Candy sales comparision")
-st.bar_chart(df.set_index("Day"))
+languages = ["English","French","Spanish","German","Hindi","Chinese","Japanese","Korean"]
 
-st.subheader("Candy sales Growth")
-st.area_chart(df.set_index("Day"))
+source_lang = st.selectbox("Pick your source language:",languages)
+target_lang = st.selectbox("Pick your target language:",languages)
+
+user_text = st.text_area("Type your text to translate")
+
+#Translate button
+if st.button("Translate Text"):
+  if user_text.strip() != "":
+    with st.spinner("Translating your text..."):
+      prompt = f"Translate this text from {source_lang} to {target_lang}:\n\n {user_text}"
+#Translate button
+if st.button("Translate Text"):
+  if user_text.strip() != "":
+    with st.spinner("Translating your text..."):
+      prompt = f"Translate this text from {source_lang} to {target_lang}:\n\n {user_text}"
+      response = model.generate_content(prompt)
+      translated_text = response.text
+      st.success(f"Translation in {target_lang}:")
+      st.write(translated_text)
+
+  else: 
+    st.warning("Please type something to translate")
+
+st.caption("Made with love using streamlit and Gemini AI")
