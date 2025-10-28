@@ -1,43 +1,54 @@
-#AI Text Translator tool
 import streamlit as st
 import google.generativeai as genai
 
-#Gemini API key setup
-genai.configure(api_key="AIzaSyBmuVv8rM58WUoV0KjRp08wp-bpGhqOGeE")
+#Page setup
+st.set_page_config(page_title="AI Riddle Generator")
+st.title("Riddle generator")
+st.write("Get fun riddles for kids! Solve them yourself or click the button to see the answer")
 
-#Load Gemini model
-model = genai.GenerativeModel("gemini-2.5-pro")
+#Gemini setup
+genai.configure(api_key="AIzaSyAnn_UrQdTnTi5LMy1H7CG_w-77QwRA7ZI")
 
-#streamlit app setup
-st.set_page_config(page_title="AI Text Translator")
+def generate_riddle():
+  """Generates a user-friendly riddle with its answer"""
+  prompt = ("Generate one short, fun, and kid friendly riddle"
+  "Provide the riddle first, and then the answer."
+  "Format it as: Riddle: ... Answer: ...")
 
-st.title("AI Text Translator(powered by Gemini)")
+  model = genai.GenerativeModel("gemimi-2.5-pro")
+  response = model.generate_content(prompt)
+  return response.text.strip()
 
-st.write("Pick Languages, type text, and get instant translation!")
+#main app with session state
+# Initialise session state
+if "riddle" not in st.session_state:
+  st.session_state.riddle = ""  
+if "answer" not in st.session_state:
+  st.session_state.answer = "" 
+if "show_answer" not in st.session_state:
+  st.session_state.show_answer = False   
 
-languages = ["English","French","Spanish","German","Hindi","Chinese","Japanese","Korean"]
+#Generate Riddle button
+if st.button("Generate Riddle"):
+  riddle_text = generate_riddle()#function call  
+  if "Answer:" in riddle_text:
+    riddle1,answer1 = riddle_text.spilt("Answer:",1)
+    st.session_state.riddle = riddle1
+    st.session_state.answer = answer1
+    st.session_state.show_answer = False  
+  else:
+    st.session_state.riddle = riddle_text 
+    st.session_state.answer = ""
+    st.session_state.show_answer = False 
 
-source_lang = st.selectbox("Pick your source language:",languages)
-target_lang = st.selectbox("Pick your target language:",languages)
+ #Display riddle
+if st.session_state.riddle:
+  st.write(st.session_state.riddle)
 
-user_text = st.text_area("Type your text to translate")
+  #show answer button
+  if st.button("Show Answer"):
+    st.session_state.show_answer = True
 
-#Translate button
-if st.button("Translate Text"):
-  if user_text.strip() != "":
-    with st.spinner("Translating your text..."):
-      prompt = f"Translate this text from {source_lang} to {target_lang}:\n\n {user_text}"
-#Translate button
-if st.button("Translate Text"):
-  if user_text.strip() != "":
-    with st.spinner("Translating your text..."):
-      prompt = f"Translate this text from {source_lang} to {target_lang}:\n\n {user_text}"
-      response = model.generate_content(prompt)
-      translated_text = response.text
-      st.success(f"Translation in {target_lang}:")
-      st.write(translated_text)
-
-  else: 
-    st.warning("Please type something to translate")
-
-st.caption("Made with love using streamlit and Gemini AI")
+#Display answer if requested
+if st.session_state.show_answer  and st.session_state.answer:
+  st.success(st.session_state.answer)
